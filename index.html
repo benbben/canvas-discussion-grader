@@ -21,7 +21,7 @@
       const token = document.getElementById("token").value.trim();
       const output = document.getElementById("output");
 
-      const url = `https://${domain}/api/v1/courses/${courseId}/discussion_topics/${discussionId}/entries`;
+      const url = `https://${domain}/courses/${courseId}/discussion_topics/${discussionId}/entries`;
 
       try {
         const response = await fetch(url, {
