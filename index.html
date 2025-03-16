@@ -1,29 +1,46 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Canvas Discussion Grader</title>
-  <link rel="stylesheet" href="style.css"/>
+  <title>Canvas API Test</title>
 </head>
 <body>
-  <div class="container">
-    <h1>Canvas Discussion Grader</h1>
-    <form id="graderForm">
-      <label for="courseId">Course ID:</label>
-      <input type="text" id="courseId" required />
+  <h1>Canvas Discussion Fetcher</h1>
+  <input type="text" id="domain" placeholder="Canvas Domain (e.g., foothillcollege.instructure.com)" size="50"><br>
+  <input type="text" id="courseId" placeholder="Course ID"><br>
+  <input type="text" id="discussionId" placeholder="Discussion ID"><br>
+  <input type="password" id="token" placeholder="Access Token" size="80"><br><br>
+  <button onclick="fetchEntries()">Fetch</button>
 
-      <label for="discussionId">Discussion ID:</label>
-      <input type="text" id="discussionId" required />
+  <pre id="output" style="white-space: pre-wrap; background: #f0f0f0; padding: 10px;"></pre>
 
-      <label for="accessToken">Access Token:</label>
-      <input type="password" id="accessToken" required />
+  <script>
+    async function fetchEntries() {
+      const domain = document.getElementById("domain").value.trim();
+      const courseId = document.getElementById("courseId").value.trim();
+      const discussionId = document.getElementById("discussionId").value.trim();
+      const token = document.getElementById("token").value.trim();
+      const output = document.getElementById("output");
 
-      <button type="submit">Fetch Posts</button>
-    </form>
-    <div id="resultsContainer"></div>
-  </div>
+      const url = `https://${domain}/api/v1/courses/${courseId}/discussion_topics/${discussionId}/entries`;
 
-  <script src="script.js"></script>
+      try {
+        const response = await fetch(url, {
+          method: "GET",
+          headers: {
+            Authorization: `Bearer ${token}`
+          }
+        });
+
+        if (!response.ok) {
+          throw new Error(`HTTP ${response.status} - ${response.statusText}`);
+        }
+
+        const data = await response.json();
+        output.textContent = JSON.stringify(data, null, 2);
+      } catch (err) {
+        output.textContent = "Error: " + err.message;
+      }
+    }
+  </script>
 </body>
 </html>
